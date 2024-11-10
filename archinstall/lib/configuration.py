@@ -148,7 +148,7 @@ def save_config(config: Dict) -> None:
 		while True:
 			path = input(
 				_(
-					"Enter a directory for the configuration(s) to be saved (tab completion enabled)\nSave directory: "
+					"Enter a directory for the configuration(s) to be saved (tab completion enabled). Hint: /root is a good option. \nSave directory: "
 				)
 			).strip(" ")
 			dest_path = Path(path)
