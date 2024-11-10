@@ -1,4 +1,5 @@
 import logging
+from time import sleep
 import os
 import sys
 import unicodedata
@@ -133,7 +134,7 @@ class Journald:
 	@staticmethod
 	def log(message: str, level: int = logging.DEBUG) -> None:
 		try:
-			import systemd.journal  # type: ignore
+			import systemd.journal	# type: ignore
 		except ModuleNotFoundError:
 			return None
 
@@ -223,8 +224,8 @@ def _stylize_output(
 		'magenta': '5',
 		'cyan': '6',
 		'white': '7',
-		'teal': '8;5;109',      # Extended 256-bit colors (not always supported)
-		'orange': '8;5;208',    # https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
+		'teal': '8;5;109',		# Extended 256-bit colors (not always supported)
+		'orange': '8;5;208',	# https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
 		'darkorange': '8;5;202',
 		'gray': '8;5;246',
 		'grey': '8;5;246',
@@ -250,6 +251,77 @@ def _stylize_output(
 	ansi = ';'.join(code_list)
 
 	return f'\033[{ansi}m{text}\033[0m'
+
+
+
+class Teacher:
+	"""
+	Used to support the --teach command line argument
+	"""
+	# Call initialize() to enable
+	ENABLED = False
+
+	# Adjust how long to pause after eaach teaching moment
+	DELAY_SECONDS = 5
+
+	# Foreground color
+	COLOR = 'yellow'
+
+	@classmethod
+	def initialize(cls):
+		"""
+		Enable teacher mode.
+
+		Note teacher is disabled on startup because we are most interested
+		in displaying the commands used to effect a running system.
+		(Not the commands used to initialize the menus.)
+		"""
+		cls.ENABLED = True
+		cls.emit('''\n\n
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+(( Entering Teaching Mode.                                            ((
+((                                                                    ((
+(( Commands will be echoed to the screen with a pause after each one. ((
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+\n\n
+''')
+
+	@classmethod
+	def is_disabled(cls):
+		return not cls.ENABLED
+
+	@classmethod
+	def teach(cls, command: str) -> None:
+		"""
+		Display command and sleep for a few seconds
+
+		The intention is to make it clear which commands are actually
+		run to create a working system. Therefore these commands are
+		printed in color to the screen, with a delay afterward so
+		student can absorb the information.
+		"""
+		if cls.is_disabled():
+			return
+
+		command_str = command if isinstance(command, str) else ' '.join([str(x) for x in command])
+
+		text = f'\n\nTEACH:\n		{command_str}\n\n\n'
+		cls.emit(text)
+
+		# allow the student time to ingest before the console scrolls past
+		sleep(cls.DELAY_SECONDS)
+
+	@classmethod
+	def emit(cls, text):
+		"""
+		Print the output to the screen with color
+		"""
+		text = _stylize_output(text, fg=cls.COLOR, bg=None, reset=False, font=[])
+
+		# We use sys.stdout.write()+flush() instead of print() to try and
+		# fix issue #94
+		sys.stdout.write(text)
+		sys.stdout.flush()
 
 
 def info(
@@ -322,7 +394,6 @@ def log(
 
 	Journald.log(text, level=level)
 
-	from .menu import Menu
 	if not Menu.is_menu_active():
 		# Finally, print the log unless we skipped it based on level.
 		# We use sys.stdout.write()+flush() instead of print() to try and
@@ -363,3 +434,7 @@ def unicode_rjust(string: str, width: int, fillbyte: str = ' ') -> str:
 	'*****こんにちは'
 	"""
 	return string.rjust(width - _count_wchars(string), fillbyte)
+
+# This import is at the end of the file instead of the beginning
+# to avoid a circular import
+from .menu import Menu
