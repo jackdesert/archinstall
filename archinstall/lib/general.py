@@ -21,7 +21,7 @@ from select import epoll, EPOLLIN, EPOLLHUP
 from shutil import which
 
 from .exceptions import RequirementError, SysCallError
-from .output import debug, error, info
+from .output import debug, error, info, teach
 from .storage import storage
 
 
@@ -321,8 +321,11 @@ class SysCommandWorker:
 				error(f"Unexpected {exception_type} occurred in {self.cmd}: {e}")
 				raise e
 
-			if storage.get('arguments', {}).get('debug'):
+			arguments = storage.get('arguments', {})
+			if arguments.get('debug'):
 				debug(f"Executing: {self.cmd}")
+			elif arguments.get('teach'):
+				teach(f"Executing: {self.cmd}")
 
 			try:
 				os.execve(self.cmd[0], list(self.cmd), {**os.environ, **self.environment_vars})
