@@ -187,7 +187,7 @@ class SysCommandWorker:
 				pass
 
 		if self.peek_output:
-			# To make sure any peaked output didn't leave us hanging
+			# To make sure any peeked output didn't leave us hanging
 			# on the same line we were on.
 			sys.stdout.write("\n")
 			sys.stdout.flush()
@@ -211,7 +211,7 @@ class SysCommandWorker:
 		return False
 
 	def write(self, data: bytes, line_ending: bool = True) -> int:
-		assert isinstance(data, bytes)  # TODO: Maybe we can support str as well and encode it
+		assert isinstance(data, bytes)	# TODO: Maybe we can support str as well and encode it
 
 		self.make_sure_we_are_executing()
 
@@ -294,9 +294,9 @@ class SysCommandWorker:
 			os.chdir(str(self.working_directory))
 
 		# Note: If for any reason, we get a Python exception between here
-		#   and until os.close(), the traceback will get locked inside
-		#   stdout of the child_fd object. `os.read(self.child_fd, 8192)` is the
-		#   only way to get the traceback without losing it.
+		#	and until os.close(), the traceback will get locked inside
+		#	stdout of the child_fd object. `os.read(self.child_fd, 8192)` is the
+		#	only way to get the traceback without losing it.
 
 		self.pid, self.child_fd = pty.fork()
 
@@ -322,8 +322,15 @@ class SysCommandWorker:
 				error(f"Unexpected {exception_type} occurred in {self.cmd}: {e}")
 				raise e
 
-			if storage.get('arguments', {}).get('debug'):
+			arguments = storage.get('arguments', {})
+			if arguments.get('debug'):
 				debug(f"Executing: {self.cmd}")
+			elif arguments.get('teach'):
+				pass
+				#sys.stderr.write('\n\n********************  Hola from teach  **********************\n\n')
+				#sys.stderr.flush()
+
+				#teach(f"Executing: {self.cmd}")
 
 			try:
 				os.execve(self.cmd[0], list(self.cmd), {**os.environ, **self.environment_vars})
