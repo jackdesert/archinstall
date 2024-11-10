@@ -1,4 +1,5 @@
 import logging
+from time import sleep
 import os
 import sys
 import unicodedata
@@ -223,9 +224,10 @@ def _stylize_output(
 		'magenta': '5',
 		'cyan': '6',
 		'white': '7',
-		'teal': '8;5;109',      # Extended 256-bit colors (not always supported)
-		'orange': '8;5;208',    # https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
+		'teal': '8;5;109',		# Extended 256-bit colors (not always supported)
+		'orange': '8;5;208',	# https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
 		'darkorange': '8;5;202',
+		'raspberry': '8;5;198',
 		'gray': '8;5;246',
 		'grey': '8;5;246',
 		'darkgray': '8;5;240',
@@ -273,6 +275,33 @@ def debug(
 ) -> None:
 	log(*msgs, level=level, fg=fg, bg=bg, reset=reset, font=font)
 
+def teach(
+	command: str,
+	fg: str = 'raspberry',
+	bg: Optional[str] = None,
+	reset: bool = False,
+	font: List[Font] = []
+) -> None:
+
+	command_str = command if isinstance(command, str) else ' '.join([str(x) for x in command])
+
+	text = f'\n\nTEACH:\n		{command_str}\n\n'
+
+	sleep(5)
+
+	# Attempt to colorize the output if supported
+	# Insert default colors and override with **kwargs
+	if _supports_color():
+		text = _stylize_output(text, fg, bg, reset, font)
+
+	from .menu import Menu
+	if not Menu.is_menu_active():
+		# We use sys.stdout.write()+flush() instead of print() to try and
+		# fix issue #94
+		sys.stdout.write(text)
+		sys.stdout.flush()
+		# Sleep to allow the student time to ingest before the console scrolls
+		sleep(5)
 
 def error(
 	*msgs: str,

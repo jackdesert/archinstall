@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from time import sleep
 import json
 import os
 import secrets
@@ -21,7 +22,7 @@ from select import epoll, EPOLLIN, EPOLLHUP
 from shutil import which
 
 from .exceptions import RequirementError, SysCallError
-from .output import debug, error, info
+from .output import debug, error, info, teach
 from .storage import storage
 
 
@@ -413,6 +414,9 @@ class SysCommand:
 		if self.session:
 			return True
 
+		# XXX Jack
+		# Write them here before the worker starts, because the worker collects and counts on its stdout
+		teach(self.cmd)
 		with SysCommandWorker(
 			self.cmd,
 			callbacks=self._callbacks,
