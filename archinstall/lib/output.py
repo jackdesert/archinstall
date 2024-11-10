@@ -282,7 +282,8 @@ def teach(
 	reset: bool = False,
 	font: List[Font] = []
 ) -> None:
-	log(*msgs, level=level, fg=fg, bg=bg, reset=reset, font=font)
+	# Send msgs as single string inside list for test
+	log([str(msgs)], level=level, fg=fg, bg=bg, reset=reset, font=font)
 
 def error(
 	*msgs: str,
