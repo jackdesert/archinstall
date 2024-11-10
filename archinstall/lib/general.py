@@ -21,7 +21,7 @@ from select import epoll, EPOLLIN, EPOLLHUP
 from shutil import which
 
 from .exceptions import RequirementError, SysCallError
-from .output import debug, error, info
+from .output import debug, error, info, Teacher
 from .storage import storage
 
 
@@ -210,7 +210,7 @@ class SysCommandWorker:
 		return False
 
 	def write(self, data: bytes, line_ending: bool = True) -> int:
-		assert isinstance(data, bytes)  # TODO: Maybe we can support str as well and encode it
+		assert isinstance(data, bytes)	# TODO: Maybe we can support str as well and encode it
 
 		self.make_sure_we_are_executing()
 
@@ -293,9 +293,9 @@ class SysCommandWorker:
 			os.chdir(str(self.working_directory))
 
 		# Note: If for any reason, we get a Python exception between here
-		#   and until os.close(), the traceback will get locked inside
-		#   stdout of the child_fd object. `os.read(self.child_fd, 8192)` is the
-		#   only way to get the traceback without losing it.
+		#	and until os.close(), the traceback will get locked inside
+		#	stdout of the child_fd object. `os.read(self.child_fd, 8192)` is the
+		#	only way to get the traceback without losing it.
 
 		self.pid, self.child_fd = pty.fork()
 
@@ -412,6 +412,11 @@ class SysCommand:
 		"""
 		if self.session:
 			return True
+
+		if storage.get('arguments', {}).get('teach'):
+			# Call Teacher here (before worker starts), so that its stdout
+			# does not get in the way of JSON parsing the output from SysCommandWorker
+			Teacher.teach(self.cmd)
 
 		with SysCommandWorker(
 			self.cmd,
