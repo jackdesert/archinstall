@@ -83,6 +83,7 @@ def define_arguments() -> None:
 						help="Define an alternate mount point for installation")
 	parser.add_argument("--skip-ntp", action="store_true", help="Disables NTP checks during installation", default=False)
 	parser.add_argument("--debug", action="store_true", default=False, help="Adds debug info into the log")
+	parser.add_argument("--teach", action="store_true", default=False, help="Teaching mode. Adds print statements showing the actual commands that were used to install the system")
 	parser.add_argument("--offline", action="store_true", default=False,
 						help="Disabled online upstream services such as package search and key-ring auto update.")
 	parser.add_argument("--no-pkg-lookups", action="store_true", default=False,

@@ -186,7 +186,7 @@ class SysCommandWorker:
 				pass
 
 		if self.peek_output:
-			# To make sure any peaked output didn't leave us hanging
+			# To make sure any peeked output didn't leave us hanging
 			# on the same line we were on.
 			sys.stdout.write("\n")
 			sys.stdout.flush()
