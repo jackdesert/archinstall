@@ -184,11 +184,16 @@ def _supports_color() -> bool:
     Return True if the running system's terminal supports color,
     and False otherwise.
     """
-    supported_platform = sys.platform != 'win32' or 'ANSICON' in os.environ
+    # On windows platforms, only allow color when ANSICON is installed
+    if sys.platform == 'win32' and not os.environ['ANSICON']:
+        return False
+
+    if 'COLORTERM' in os.environ:
+        # Check COLORTERM first, because sometimes sys.stdout.isatty() returns false even when color is supported
+        return True
 
     # isatty is not always implemented, #6223.
-    is_a_tty = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
-    return supported_platform and is_a_tty
+    return hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
 
 
 class Font(Enum):
@@ -323,7 +328,8 @@ class Teacher:
         """
         Print the output to the screen with color
         """
-        text = _stylize_output(text, fg=cls.COLOR, bg=None, reset=False, font=[])
+        if _supports_color():
+            text = _stylize_output(text, fg=cls.COLOR, bg=None, reset=False, font=[])
 
         # We use sys.stdout.write()+flush() instead of print() to try and
         # fix issue #94
@@ -446,3 +452,4 @@ def unicode_rjust(string: str, width: int, fillbyte: str = ' ') -> str:
 # Import at the end of the file instead of the beginning
 # to avoid a circular import
 from .menu import Menu
+
