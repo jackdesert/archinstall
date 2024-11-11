@@ -275,6 +275,8 @@ class Teacher:
     # Use spaces instead of tabs for precise positioning
     LEFT_PAD = ''.ljust(7)
 
+    COUNT = 1
+
     @classmethod
     def initialize(cls):
         """
@@ -287,12 +289,14 @@ class Teacher:
         cls.ENABLED = True
         # Specify precise number of spaces programmatically because
         # some editors convert multiple spaces in a row to tabs
-        pad1, pad2 = (''.ljust(44), ''.ljust(67))
+        pad1, pad2, pad3 = (''.ljust(54), ''.ljust(67), ''.ljust(8))
         cls.emit(f'''\n
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
-(( Entering Teaching Mode.{pad1}((
+(( TEACHING MODE{pad1}((
 (( {pad2}((
 (( Commands will be echoed to the screen with a pause after each one. ((
+(( {pad2}((
+(( Read along to understand what's happening under the hood. {pad3} ((
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
 \n\n
 ''')
@@ -317,11 +321,12 @@ class Teacher:
         command_str = command if isinstance(command, str) else ' '.join([str(x) for x in command])
 
     
-        text = f'\nTEACH:\n{cls.LEFT_PAD}{command_str}\n\n\n'
+        text = f'\nCOMMAND {cls.COUNT}:\n{cls.LEFT_PAD}{command_str}\n\n\n'
         cls.emit(text)
 
         # Give the student time to ingest the message before the console scrolls past
         sleep(cls.DELAY_SECONDS)
+        cls.COUNT += 1
 
     @classmethod
     def emit(cls, text: str ) -> None:
