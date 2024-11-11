@@ -105,9 +105,12 @@ def perform_installation(mountpoint: Path) -> None:
 	formatted and setup prior to entering this function.
 	"""
 	info('Starting installation...')
-	# Teacher is initialized only after we start installation to avoid lots of messages
-	# during menu startup
-	Teacher.initialize()
+
+	# Teacher is initialized only after we start installation to avoid
+	# lots of messages during menu startup
+	if archinstall.storage.get('arguments', {}).get('teach'):
+		Teacher.initialize()
+
 	disk_config: disk.DiskLayoutConfiguration = archinstall.arguments['disk_config']
 
 	# Retrieve list of additional repositories and set boolean values appropriately
