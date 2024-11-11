@@ -280,8 +280,8 @@ class Teacher:
         (Not the commands used to initialize the menus.)
         """
         cls.ENABLED = True
-        # Specify precise number of spaces because otherwise some editors
-        # changes multiple spaces in a row in source to use tabs
+        # Specify precise number of spaces programmatically because
+        # some editors convert multiple spaces in a row to tabs
         pad1, pad2 = (''.ljust(44), ''.ljust(67))
         cls.emit(f'''\n
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
@@ -315,11 +315,11 @@ class Teacher:
         text = f'\nTEACH:\n{cls.LEFT_PAD}{command_str}\n\n\n'
         cls.emit(text)
 
-        # allow the student time to ingest before the console scrolls past
+        # Give the student time to ingest the message before the console scrolls past
         sleep(cls.DELAY_SECONDS)
 
     @classmethod
-    def emit(cls, text):
+    def emit(cls, text: str ) -> None:
         """
         Print the output to the screen with color
         """
@@ -442,6 +442,7 @@ def unicode_rjust(string: str, width: int, fillbyte: str = ' ') -> str:
     """
     return string.rjust(width - _count_wchars(string), fillbyte)
 
-# This import is at the end of the file instead of the beginning
+
+# Import at the end of the file instead of the beginning
 # to avoid a circular import
 from .menu import Menu
