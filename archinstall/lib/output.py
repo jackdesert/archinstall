@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Dict, Union, List, Any, Callable, Optional, TYPE_CHECKING
 from dataclasses import asdict, is_dataclass
 
-from .menu import Menu
 from .storage import storage
 
 if TYPE_CHECKING:
@@ -435,3 +434,7 @@ def unicode_rjust(string: str, width: int, fillbyte: str = ' ') -> str:
 	'*****こんにちは'
 	"""
 	return string.rjust(width - _count_wchars(string), fillbyte)
+
+# This import is at the end of the file instead of the beginning
+# to avoid a circular import
+from .menu import Menu
