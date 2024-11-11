@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Dict, Union, List, Any, Callable, Optional, TYPE_CHECKING
 from dataclasses import asdict, is_dataclass
 
+from .menu import Menu
 from .storage import storage
 
 if TYPE_CHECKING:
@@ -255,57 +256,72 @@ def _stylize_output(
 
 
 class Teacher:
+	"""
+	Used to support the --teach command line argument
+	"""
+	# Call initialize() to enable
 	ENABLED = False
 
 	# Adjust how long to pause after eaach teaching moment
 	DELAY_SECONDS = 5
 
+	# Foreground color
+	COLOR = 'yellow'
+
 	@classmethod
-	def enable(cls):
+	def initialize(cls):
 		"""
 		Enable teacher mode.
 
-		Note teacher is disabled on start to avoid lots of messages and delays during menu startup
+		Note teacher is disabled on startup because we are most interested
+		in displaying the commands used to effect a running system.
+		(Not the commands used to initialize the menus.)
 		"""
 		cls.ENABLED = True
+		cls.emit('''
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+(( Entering "Teach Mode."                                             ((
+((                                                                    ((
+(( Commands will be echoed to the screen with a pause after each one. ((
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+'''
 
 	@classmethod
 	def is_disabled(cls):
 		return not cls.ENABLED
 
 	@classmethod
-	def teach(
-		cls,
-		command: str,
-		fg: str = 'other',
-		bg: Optional[str] = None,
-		reset: bool = False,
-		font: List[Font] = []
-	) -> None:
+	def teach(cls, command: str) -> None:
+		"""
+		Display command and sleep for a few seconds
 
+		The intention is to make it clear which commands are actually
+		run to create a working system. Therefore these commands are
+		printed in color to the screen, with a delay afterward so
+		student can absorb the information.
+		"""
 		if cls.is_disabled():
 			return
 
 		command_str = command if isinstance(command, str) else ' '.join([str(x) for x in command])
 
-		text = f'\n\nTEACH:\n		{command_str}\n\n'
+		text = f'\n\nTEACH:\n		{command_str}\n\n\n'
+		cls.emit(text)
 
-		sleep(5)
+		# allow the student time to ingest before the console scrolls past
+		sleep(cls.DELAY_SECONDS)
 
-		# Attempt to colorize the output if supported
-		# Insert default colors and override with **kwargs
-		#if _supports_color():
-		text = _stylize_output(text, fg, bg, reset, font)
+	@classmethod
+	def emit(cls, text):
+		"""
+		Print the output to the screen with color
+		"""
+		text = _stylize_output(text, fg=cls.COLOR, bg=None, reset=False, font=[])
 
-		from .menu import Menu
-		if not Menu.is_menu_active():
-			# We use sys.stdout.write()+flush() instead of print() to try and
-			# fix issue #94
-			sys.stdout.write(text)
-			sys.stdout.flush()
-			# Sleep to allow the student time to ingest before the console scrolls
-			sleep(cls.DELAY_SECONDS)
-
+		# We use sys.stdout.write()+flush() instead of print() to try and
+		# fix issue #94
+		sys.stdout.write(text)
+		sys.stdout.flush()
 
 
 def info(
@@ -378,7 +394,6 @@ def log(
 
 	Journald.log(text, level=level)
 
-	from .menu import Menu
 	if not Menu.is_menu_active():
 		# Finally, print the log unless we skipped it based on level.
 		# We use sys.stdout.write()+flush() instead of print() to try and
