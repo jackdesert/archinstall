@@ -278,13 +278,14 @@ class Teacher:
 		(Not the commands used to initialize the menus.)
 		"""
 		cls.ENABLED = True
-		cls.emit('''
+		cls.emit('''\n\n
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
 (( Entering Teaching Mode.                                            ((
 ((                                                                    ((
 (( Commands will be echoed to the screen with a pause after each one. ((
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
-'''
+\n\n
+''')
 
 	@classmethod
 	def is_disabled(cls):
