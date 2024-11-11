@@ -280,7 +280,7 @@ class Teacher:
 		cls.ENABLED = True
 		cls.emit('''
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
-(( Entering "Teach Mode."                                             ((
+(( Entering Teaching Mode.                                            ((
 ((                                                                    ((
 (( Commands will be echoed to the screen with a pause after each one. ((
 ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
