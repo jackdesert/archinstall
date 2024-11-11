@@ -785,8 +785,8 @@ class DeviceHandler(object):
 	def _wipe(self, dev_path: Path) -> None:
 		"""
 		Wipe a device (partition or otherwise) of meta-data, be it file system, LVM, etc.
-		@param dev_path:    Device path of the partition to be wiped.
-		@type dev_path:     str
+		@param dev_path:	Device path of the partition to be wiped.
+		@type dev_path:		str
 		"""
 		with open(dev_path, 'wb') as p:
 			p.write(bytearray(1024))
