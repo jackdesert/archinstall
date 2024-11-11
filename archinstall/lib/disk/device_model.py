@@ -143,14 +143,14 @@ class PartitionTable(Enum):
 
 class Unit(Enum):
 	B = 1  # byte
-	kB = 1000 ** 1	# kilobyte
-	MB = 1000 ** 2	# megabyte
-	GB = 1000 ** 3	# gigabyte
-	TB = 1000 ** 4	# terabyte
-	PB = 1000 ** 5	# petabyte
-	EB = 1000 ** 6	# exabyte
-	ZB = 1000 ** 7	# zettabyte
-	YB = 1000 ** 8	# yottabyte
+	kB = 1000 ** 1  # kilobyte
+	MB = 1000 ** 2  # megabyte
+	GB = 1000 ** 3  # gigabyte
+	TB = 1000 ** 4  # terabyte
+	PB = 1000 ** 5  # petabyte
+	EB = 1000 ** 6  # exabyte
+	ZB = 1000 ** 7  # zettabyte
+	YB = 1000 ** 8  # yottabyte
 
 	KiB = 1024 ** 1  # kibibyte
 	MiB = 1024 ** 2  # mebibyte
@@ -585,10 +585,10 @@ class PartitionFlag(Enum):
 
 
 # class PartitionGUIDs(Enum):
-#	"""
-#	A list of Partition type GUIDs (lsblk -o+PARTTYPE) can be found here: https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs
-#	"""
-#	XBOOTLDR = 'bc13c2ff-59e6-4262-a352-b275fd6f7172'
+# 	"""
+# 	A list of Partition type GUIDs (lsblk -o+PARTTYPE) can be found here: https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs
+# 	"""
+# 	XBOOTLDR = 'bc13c2ff-59e6-4262-a352-b275fd6f7172'
 
 
 class FilesystemType(Enum):
@@ -849,7 +849,7 @@ class LvmLayoutType(Enum):
 			case LvmLayoutType.Default:
 				return str(_('Default layout'))
 			# case LvmLayoutType.Manual:
-			#	return str(_('Manual configuration'))
+			# 	return str(_('Manual configuration'))
 
 		raise ValueError(f'Unknown type: {self}')
 
@@ -1095,12 +1095,12 @@ class LvmConfiguration:
 
 
 # def get_lv_crypt_uuid(self, lv: LvmVolume, encryption: EncryptionType) -> str:
-#	"""
-#	Find the LUKS superblock UUID for the device that
-#	contains the given logical volume
-#	"""
-#	for vg in self.vol_groups:
-#		if vg.contains_lv(lv):
+# 	"""
+# 	Find the LUKS superblock UUID for the device that
+# 	contains the given logical volume
+# 	"""
+# 	for vg in self.vol_groups:
+# 		if vg.contains_lv(lv):
 
 
 @dataclass
@@ -1450,11 +1450,10 @@ def _fetch_lsblk_info(
 
 		raise err
 
-	raw = worker.output(remove_cr=False)
 	try:
-		data = json.loads(raw)
+		data = json.loads(worker.output(remove_cr=False))
 	except json.decoder.JSONDecodeError as err:
-		error(f"Could not decode lsblk JSON:\n{raw}")
+		error(f"Could not decode lsblk JSON:\n{worker.output().decode().rstrip()}")
 		raise err
 
 	blockdevices = data['blockdevices']

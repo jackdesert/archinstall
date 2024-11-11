@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from time import sleep
 import json
 import os
 import secrets
@@ -187,7 +186,7 @@ class SysCommandWorker:
 				pass
 
 		if self.peek_output:
-			# To make sure any peeked output didn't leave us hanging
+			# To make sure any peaked output didn't leave us hanging
 			# on the same line we were on.
 			sys.stdout.write("\n")
 			sys.stdout.flush()
@@ -322,15 +321,8 @@ class SysCommandWorker:
 				error(f"Unexpected {exception_type} occurred in {self.cmd}: {e}")
 				raise e
 
-			arguments = storage.get('arguments', {})
-			if arguments.get('debug'):
+			if storage.get('arguments', {}).get('debug'):
 				debug(f"Executing: {self.cmd}")
-			elif arguments.get('teach'):
-				pass
-				#sys.stderr.write('\n\n********************  Hola from teach  **********************\n\n')
-				#sys.stderr.flush()
-
-				#teach(f"Executing: {self.cmd}")
 
 			try:
 				os.execve(self.cmd[0], list(self.cmd), {**os.environ, **self.environment_vars})
@@ -421,9 +413,11 @@ class SysCommand:
 		if self.session:
 			return True
 
-		# Call Teacher here before worker starts, because if you run Teacher inside the worker then some commands fail
-		# because the total stdout is no longer JSON
-		Teacher.teach(self.cmd)
+		if storage.get('arguments', {}).get('teach'):
+			# Call Teacher here (before worker starts), so that its stdout
+			# does not get in the way of JSON parsing the output from SysCommandWorker
+			Teacher.teach(self.cmd)
+
 		with SysCommandWorker(
 			self.cmd,
 			callbacks=self._callbacks,

@@ -227,8 +227,6 @@ def _stylize_output(
 		'teal': '8;5;109',		# Extended 256-bit colors (not always supported)
 		'orange': '8;5;208',	# https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
 		'darkorange': '8;5;202',
-		'raspberry': '8;5;198',
-		'other': '8;5;229',
 		'gray': '8;5;246',
 		'grey': '8;5;246',
 		'darkgray': '8;5;240',
