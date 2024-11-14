@@ -111,7 +111,7 @@ class Installer:
 			raise exc_val
 
 		if not (missing_steps := self.post_install_check()):
-			log('Installation completed without any errors. Log files temporarily available at {storage["LOG_PATH"]}. You may reboot when ready.', fg='green')
+			log(f'Installation completed without any errors.\nLog files temporarily available at {storage["LOG_PATH"]}.\nYou may reboot when ready.\n', fg='green')
 			self.sync_log_to_install_medium()
 			return True
 		else:

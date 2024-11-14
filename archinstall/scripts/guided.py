@@ -225,7 +225,7 @@ def perform_installation(mountpoint: Path) -> None:
 if len(sys.argv) == 1:
 	# Make it obvious that there are options you can pass
 	info('Additional command-line options are available. See `archinstall --help`.')
-	sleep(3)
+	sleep(4)
 
 if not archinstall.arguments.get('silent'):
 	ask_user_questions()
