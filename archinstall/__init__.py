@@ -78,7 +78,7 @@ def define_arguments() -> None:
 						help="WARNING: Disables all prompts for input and confirmation. If no configuration is provided, this is ignored")
 	parser.add_argument("--dry-run", "--dry_run", action="store_true",
 						help="Generates a configuration file and then exits instead of performing an installation")
-	parser.add_argument("--script", default="guided", nargs="?", help="Script to run for installation", type=str)
+	parser.add_argument("--script", default="guided", nargs="?", help="Script to run for installation. Default: guided", type=str)
 	parser.add_argument("--mount-point", "--mount_point", nargs="?", type=str,
 						help="Define an alternate mount point for installation")
 	parser.add_argument("--skip-ntp", action="store_true", help="Disables NTP checks during installation", default=False)
