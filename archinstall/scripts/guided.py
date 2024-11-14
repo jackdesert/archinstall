@@ -221,9 +221,12 @@ def perform_installation(mountpoint: Path) -> None:
 	debug(f"Disk states after installing: {disk.disk_layouts()}")
 
 
-if not archinstall.arguments.get('silent'):
+if len(sys.argv) == 1:
+	# Make it obvious that there are options you can pass
 	info('Additional command-line options are available. See `archinstall --help`.')
-	sleep(2)
+	sleep(3)
+
+if not archinstall.arguments.get('silent'):
 	ask_user_questions()
 
 config_output = ConfigurationOutput(archinstall.arguments)
