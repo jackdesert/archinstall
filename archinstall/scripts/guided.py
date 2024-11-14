@@ -1,4 +1,5 @@
 from pathlib import Path
+from time import sleep
 from typing import Any, TYPE_CHECKING, Optional
 
 import archinstall
@@ -221,6 +222,8 @@ def perform_installation(mountpoint: Path) -> None:
 
 
 if not archinstall.arguments.get('silent'):
+	info('Additional command-line options are available. See `archinstall --help`.')
+	sleep(2)
 	ask_user_questions()
 
 config_output = ConfigurationOutput(archinstall.arguments)

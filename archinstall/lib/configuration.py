@@ -148,7 +148,7 @@ def save_config(config: Dict) -> None:
 		while True:
 			path = input(
 				_(
-					"Enter a directory for the configuration(s) to be saved (tab completion enabled)\nSave directory: "
+					"Enter a directory for the configuration(s) to be saved (tab completion enabled to help you locate full directory names)\nNote '.' is also a good option.\nTo persist config file through reboot, mount a separate drive before running `archinstall`.\nSave directory: "
 				)
 			).strip(" ")
 			dest_path = Path(path)

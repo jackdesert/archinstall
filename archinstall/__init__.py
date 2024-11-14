@@ -73,7 +73,7 @@ def define_arguments() -> None:
 	"""
 	parser.add_argument("-v", "--version", action="version", version="%(prog)s " + __version__)
 	parser.add_argument("--config", nargs="?", help="JSON configuration file or URL")
-	parser.add_argument("--creds", nargs="?", help="JSON credentials configuration file")
+	parser.add_argument("--creds", nargs="?", help="JSON credentials file or URL")
 	parser.add_argument("--silent", action="store_true",
 						help="WARNING: Disables all prompts for input and confirmation. If no configuration is provided, this is ignored")
 	parser.add_argument("--dry-run", "--dry_run", action="store_true",
